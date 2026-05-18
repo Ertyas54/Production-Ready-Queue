@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - queue-network
+
+  producer:
+    build:
+      context: .
+      dockerfile: Dockerfile.producer
+    container_name: queue-producer
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/
+    networks:
+      - queue-network
+
+  consumer-main:
+    build:
+      context: .
+      dockerfile: Dockerfile.consumer-main
+    container_name: queue-consumer-main
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/
+      - MAX_RETRIES=${MAX_RETRIES}
+      - QUEUE_MAIN=${QUEUE_MAIN}
+      - QUEUE_RETRY=${QUEUE_RETRY}
+      - QUEUE_DEAD=${QUEUE_DEAD}
+      - SIMULATED_ERROR_RATE=${SIMULATED_ERROR_RATE}
+    networks:
+      - queue-network
+
+  consumer-retry:
+    build:
+      context: .
+      dockerfile: Dockerfile.consumer-retry
+    container_name: queue-consumer-retry
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/
+      - MAX_RETRIES=${MAX_RETRIES}
+      - RETRY_DELAY_MS=${RETRY_DELAY_MS}
+      - QUEUE_MAIN=${QUEUE_MAIN}
+      - QUEUE_RETRY=${QUEUE_RETRY}
+      - QUEUE_DEAD=${QUEUE_DEAD}
+    networks:
+      - queue-network
+
+  consumer-dead:
+    build:
+      context: .
+      dockerfile: Dockerfile.consumer-dead
+    container_name: queue-consumer-dead
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/
+      - QUEUE_DEAD=${QUEUE_DEAD}
+    networks:
+      - queue-network
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.api-gateway
+    container_name: queue-api-gateway
+    ports:
+      - "${API_EXTERNAL_PORT}:${API_PORT}"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/
+      - API_PORT=${API_PORT}
+      - QUEUE_MAIN=${QUEUE_MAIN}
+      - QUEUE_RETRY=${QUEUE_RETRY}
+      - QUEUE_DEAD=${QUEUE_DEAD}
+    networks:
+      - queue-network
+
+networks:
+  queue-network:
+    driver: bridge

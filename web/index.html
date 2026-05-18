@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Production-Ready Queue</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2>Отправка заказов</h2>
+
+<button class="btn-success" onclick="sendOrder('valid-order')">
+    Отправить корректный заказ
+    <span class="hint">Обработается успешно</span>
+</button>
+
+<button class="btn-retry" onclick="sendOrder('retry-order')">
+    Отправить заказ с сетевой ошибкой
+    <span class="hint">Пройдёт через Retry → Dead Letter Queue</span>
+</button>
+
+<button class="btn-dead" onclick="sendOrder('invalid-order')">
+    Отправить заказ с ошибкой валидации
+    <span class="hint">Сразу в Dead Letter Queue</span>
+</button>
+
+<div class="result" id="result">
+    Нажмите кнопку для отправки заказа
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
