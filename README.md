@@ -51,7 +51,7 @@ queue-consumer-retry  | [RETRY] ORDER-002 | Заказ: RETRY-TEST | Попыт�
 queue-consumer-retry  | [FAILED] ORDER-002 | Заказ: RETRY-TEST | Попытка: 3/3 | Ошибка: временная ошибка сети: connection timeout (демонстрация Retry) | 18:37:47    
 ````
 #### RabbitMQ
-![Retry.jpg](../../../%D0%A3%D1%87%D0%B5%D0%B1%D0%B0/6%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/%D0%A2%D1%80%D0%BE%D0%B4%20%28%D0%90%D0%BA%D1%83%D1%82%D0%B8%D0%BD%29/%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%8B%204/Retry.jpg)
+<img width="711" height="33" alt="Retry" src="https://github.com/user-attachments/assets/e9b2aeb8-ad5b-4be9-88d2-7e90d77906f6" />
 
 consumer-main получает заказ, фиксирует ошибку сети, отправляет в queue.retry. В RabbitMQ очередь queue.retry показывает Ready: 1. Сообщение ждёт повторной обработки. 
 Запустить consumer-retry: 
@@ -59,7 +59,8 @@ consumer-main получает заказ, фиксирует ошибку се�
 docker-compose start consumer-retry 
 ```
 #### RabbitMQ
-![Retry after.jpg](../../../%D0%A3%D1%87%D0%B5%D0%B1%D0%B0/6%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/%D0%A2%D1%80%D0%BE%D0%B4%20%28%D0%90%D0%BA%D1%83%D1%82%D0%B8%D0%BD%29/%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%8B%204/Retry%20after.jpg)
+<img width="1000" height="40" alt="Retry after" src="https://github.com/user-attachments/assets/66cc55c2-f254-4c0c-85d7-8158ad575388" />
+
 
 ### 3. Dead Letter Queue
 Нажать "Отправить заказ с ошибкой валидации". 
@@ -75,7 +76,8 @@ queue-consumer-dead   | 18:41:35 1. ORDER-002 | Тело: Заказ с сете
 queue-consumer-dead   | 18:41:35 2. ORDER-003 | Тело: Заказ с ошибкой валидации (тип ошибки #4) | Создано: 18:41:30 | Попыток: 1  
 ````
 #### RabbitMQ
-![Dead.jpg](../../../%D0%A3%D1%87%D0%B5%D0%B1%D0%B0/6%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/%D0%A2%D1%80%D0%BE%D0%B4%20%28%D0%90%D0%BA%D1%83%D1%82%D0%B8%D0%BD%29/%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%8B%204/Dead.jpg)
+<img width="712" height="43" alt="Dead" src="https://github.com/user-attachments/assets/d5354320-c734-4e3a-85f0-9de20696e39e" />
+
 
 ### 4. Отказоустойчивость
 Остановить consumer-main: 
@@ -84,10 +86,11 @@ docker-compose stop consumer-main
 ````
 Нажать несколько раз любую кнопку отправки. 
 #### RabbitMQ
-![Main off.jpg](../../../%D0%A3%D1%87%D0%B5%D0%B1%D0%B0/6%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/%D0%A2%D1%80%D0%BE%D0%B4%20%28%D0%90%D0%BA%D1%83%D1%82%D0%B8%D0%BD%29/%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%8B%204/Main%20off.jpg)
+<img width="712" height="35" alt="Main off" src="https://github.com/user-attachments/assets/9142f36a-37cb-43b5-9951-97fa4a9a477a" />
+
 Запустить consumer-main: 
 ````
 docker-compose start consumer-main
 ````
 #### RabbitMQ
-![Main on.jpg](../../../%D0%A3%D1%87%D0%B5%D0%B1%D0%B0/6%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/%D0%A2%D1%80%D0%BE%D0%B4%20%28%D0%90%D0%BA%D1%83%D1%82%D0%B8%D0%BD%29/%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%8B%204/Main%20on.jpg)
+<img width="720" height="112" alt="Main on" src="https://github.com/user-attachments/assets/aec572ae-fec7-407d-a272-dd51d6caa0df" />
