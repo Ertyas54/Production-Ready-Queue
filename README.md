@@ -53,7 +53,6 @@ queue-consumer-retry  | [FAILED] ORDER-002 | Заказ: RETRY-TEST | Попыт
 #### RabbitMQ
 <img width="711" height="33" alt="Retry" src="https://github.com/user-attachments/assets/e9b2aeb8-ad5b-4be9-88d2-7e90d77906f6" />
 
-consumer-main получает заказ, фиксирует ошибку сети, отправляет в queue.retry. В RabbitMQ очередь queue.retry показывает Ready: 1. Сообщение ждёт повторной обработки. 
 Запустить consumer-retry: 
 ```
 docker-compose start consumer-retry 
